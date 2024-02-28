@@ -15,10 +15,27 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
   // TODO WITH TA : add a count state
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
-  const handleSubmit = () => {
-    onNewCommand(commandString);
-    setCommandString(""); // Clear input after submitting
-    setCount((prevCount) => prevCount + 1); // Increment the count
+  const handleSubmit = async () => {
+    const [action, param] = commandString.split(" ");
+    let url = "http://localhost:6969/csv";
+    let query = `?action=${action}`;
+
+    if (action === "loadcsv") {
+      query += `&path=${param}`;
+    } else if (action === "searchcsv") {
+      query += `&query=${param}`;
+    }
+
+    const response = await fetch(`${url}${query}`, {
+      method: "GET",
+      headers: {},
+    });
+
+    const result = await response.text();
+    onNewCommand(`${commandString} - ${result}`);
+
+    setCommandString("");
+    setCount((prevCount) => prevCount + 1);
   };
   // TODO: Once it increments, try to make it push commands... Note that you can use the `...` spread syntax to copy what was there before
   // add to it with new commands.
