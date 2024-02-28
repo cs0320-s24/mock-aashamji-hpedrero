@@ -17,7 +17,7 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
   // TODO WITH TA: build a handleSubmit function called in button onClick
   const handleSubmit = async () => {
     const [action, param] = commandString.split(" ");
-    let url = "http://localhost:6969/csv";
+    let url = "http://localhost:8000/csv";
     let query = `?action=${action}`;
 
     if (action === "loadcsv") {
