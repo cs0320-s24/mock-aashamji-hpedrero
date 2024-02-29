@@ -55,12 +55,18 @@ test('after I type into the input box, its text changes', async ({ page }) => {
   await expect(page.getByLabel('Command input')).toHaveValue(mock_input)
 });
 
-test('on page load, i see a button', async ({ page }) => {
-  // TODO WITH TA: Fill this in!
-});
+// this code is already tested at the top
+// test('on page load, i see a button', async ({ page }) => {
+//   // TODO WITH TA: Fill this in!
 
-test('after I click the button, its label increments', async ({ page }) => {
-  // TODO WITH TA: Fill this in to test your button counter functionality!
+// });
+
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:8000/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('hello');
+  await page.getByRole('button', { name: 'Submit' }).click();
 });
 
 test('after I click the button, my command gets pushed', async ({ page }) => {
