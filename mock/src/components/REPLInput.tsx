@@ -13,23 +13,34 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
+  const [outputMode, setOutputMode] = useState<"brief" | "verbose">("brief");
   // TODO WITH TA : add a count state
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
   const handleSubmit = async () => {
     const [action, param] = commandString.split(" ");
     let result = "Command not recognized";
-    if (action === "loadcsv") {
+    let output = "";
+
+    if (action === "mode" && (param === "brief" || param === "verbose")) {
+      setOutputMode(param);
+      result = `Output mode set to ${param}`;
+    } else if (action === "loadcsv") {
       result = "CSV loaded!";
-    }
-    if (action === "viewcsv") {
+    } else if (action === "viewcsv") {
       result = JSON.stringify(mockedCsvData);
     } else if (action === "searchcsv") {
       const searchResults = searchMockedData(param, mockedCsvData);
       result = JSON.stringify(searchResults);
     }
 
-    onNewCommand(`${commandString} - ${result}`);
+    if (outputMode === "verbose") {
+      output = `Command: ${commandString}\nOutput: ${result}`;
+    } else {
+      output = result;
+    }
+
+    onNewCommand(output);
     setCommandString("");
     setCount((prevCount) => prevCount + 1);
   };
