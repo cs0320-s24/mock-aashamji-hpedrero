@@ -1,26 +1,12 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
-import { mockedCsvData, searchMockedData } from "./mockedJson";
-import { executeCommand } from "./REPLFunction";
-import { addCommand } from "./REPLFunction";
+import { addCommand, executeCommand } from "./REPLFunction";
+import { loadCsv, viewCsv, searchCsv } from "./Commands";
 
-/**
- * Registers REPL commands for managing CSV data and changing output modes.
- */
-addCommand("loadcsv", () => "CSV loaded!");
-addCommand("viewcsv", () => JSON.stringify(mockedCsvData));
-addCommand("searchcsv", (args) =>
-  JSON.stringify(searchMockedData(args.join(" "), mockedCsvData))
-);
-addCommand("mode", (args) => `Output mode set to ${args[0]}`);
-
-// addCommand("mode", (args) => {
-//   if (args.length === 0 || (args[0] !== "verbose" && args[0] !== "brief")) {
-//     return "ERROR USAGE: mode + <brief / verbose>";
-//   }
-//   return `Output mode set: ${args[0]}`;
-// });
+addCommand("loadcsv", loadCsv);
+addCommand("viewcsv", viewCsv);
+addCommand("searchcsv", searchCsv);
 
 /**
  * Props for the REPLInput component.
@@ -61,7 +47,6 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
         result = "ERROR USAGE: mode + <brief / verbose>";
       }
     } else {
-      // Handling other commands
       result = executeCommand(action, args);
     }
 
