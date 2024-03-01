@@ -111,5 +111,32 @@ test('testing no input', async ({page}) => {
   await expect(page.locator('#root')).toContainText('Command: Output: Command not recognized');
 });
 
+test('testing search csv (successful)', async ({page}) => {
+  await page.goto('http://localhost:8001/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('searchcsv John Doe');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: searchcsv John Doe Output: [["1","John Doe","Software Engineer","30"]]');
+})
+
+test('testing search csv (unsuccessful)', async ({page}) => {
+  await page.goto('http://localhost:8001/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('searchcsv Hugh');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: searchcsv Hugh Output: []');
+
+})
+
 
 
