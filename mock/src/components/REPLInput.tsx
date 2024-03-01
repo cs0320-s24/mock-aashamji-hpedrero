@@ -11,6 +11,7 @@ addCommand("searchcsv", (args) =>
   JSON.stringify(searchMockedData(args.join(" "), mockedCsvData))
 );
 addCommand("mode", (args) => `Output mode set to ${args[0]}`);
+
 // addCommand("mode", (args) => {
 //   if (args.length === 0 || (args[0] !== "verbose" && args[0] !== "brief")) {
 //     return "ERROR USAGE: mode + <brief / verbose>";
@@ -33,8 +34,19 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
   const handleSubmit = async () => {
-    const [command, ...args] = commandString.split(" ");
-    let result = executeCommand(command, args);
+    const [action, ...args] = commandString.split(" ");
+    let result;
+    if (action == "mode") {
+      if (args[0] === "brief" || args[0] === "verbose") {
+        setOutputMode(args[0]);
+        result = `Output mode set to ${args[0]}`;
+      } else {
+        result = "ERROR USAGE: mode + <brief / verbose>";
+      }
+    } else {
+      // Handling other commands
+      result = executeCommand(action, args);
+    }
 
     if (Array.isArray(result)) {
       result = JSON.stringify(result);
