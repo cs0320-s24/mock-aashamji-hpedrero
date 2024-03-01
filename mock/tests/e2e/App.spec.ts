@@ -89,5 +89,27 @@ test('testing command not recognised (fuzz1)', async ({ page }) => {
   await expect(page.locator('#root')).toContainText('Command not recognized');
 });
 
+test('testing mode command not brief or verbose (fuzz2)', async ({ page }) => {
+  await page.goto('http://localhost:8001/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('mode xyzabc');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: mode xyzabc Output: ERROR USAGE: mode + <brief / verbose>');
+});
+
+test('testing no input', async ({page}) => {
+  await page.goto('http://localhost:8001/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: Output: Command not recognized');
+});
+
 
 
