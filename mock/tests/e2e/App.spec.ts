@@ -55,12 +55,6 @@ test('after I type into the input box, its text changes', async ({ page }) => {
   await expect(page.getByLabel('Command input')).toHaveValue(mock_input)
 });
 
-// this code is already tested at the top
-// test('on page load, i see a button', async ({ page }) => {
-//   // TODO WITH TA: Fill this in!
-
-// });
-
 test('test', async ({ page }) => {
   await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
@@ -70,7 +64,7 @@ test('test', async ({ page }) => {
 });
 
 
-test('testing mock value', async ({ page }) => {
+test('testing complete mocked test', async ({ page }) => {
   await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await expect(page.getByPlaceholder('Enter command here!')).toBeEmpty();
@@ -84,3 +78,16 @@ test('testing mock value', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.locator('#root')).toContainText('[["ID","Name","Occupation","Age"],["1","John Doe","Software Engineer","30"],["2","Jane Smith","Data Scientist","28"],["3","Alice Johnson","Product Manager","35"],["4","Bob Brown","Graphic Designer","26"],["5","Charlie Davis","Marketing Specialist","32"]]');
 });
+
+test('testing command not recognised (fuzz1)', async ({ page }) => {
+  await page.goto('http://localhost:8000/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('abcdef');
+  await expect(page.getByPlaceholder('Enter command here!')).toHaveValue('abcdef');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command not recognized');
+});
+
+
+
