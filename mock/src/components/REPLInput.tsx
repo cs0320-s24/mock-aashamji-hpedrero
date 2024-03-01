@@ -1,6 +1,7 @@
 import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
+import { mockedCsvData, searchMockedData } from "./mockedJson";
 
 interface REPLInputProps {
   onNewCommand: (newCommand: string) => void;
@@ -17,23 +18,18 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
   // TODO WITH TA: build a handleSubmit function called in button onClick
   const handleSubmit = async () => {
     const [action, param] = commandString.split(" ");
-    let url = "http://localhost:6969/csv";
-    let query = `?action=${action}`;
-
+    let result = "Command not recognized";
     if (action === "loadcsv") {
-      query += `&path=${param}`;
+      result = "CSV loaded!";
+    }
+    if (action === "viewcsv") {
+      result = JSON.stringify(mockedCsvData);
     } else if (action === "searchcsv") {
-      query += `&query=${param}`;
+      const searchResults = searchMockedData(param, mockedCsvData);
+      result = JSON.stringify(searchResults);
     }
 
-    const response = await fetch(`${url}${query}`, {
-      method: "GET",
-      headers: {},
-    });
-
-    const result = await response.text();
     onNewCommand(`${commandString} - ${result}`);
-
     setCommandString("");
     setCount((prevCount) => prevCount + 1);
   };
