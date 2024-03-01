@@ -11,6 +11,12 @@ addCommand("searchcsv", (args) =>
   JSON.stringify(searchMockedData(args.join(" "), mockedCsvData))
 );
 addCommand("mode", (args) => `Output mode set to ${args[0]}`);
+// addCommand("mode", (args) => {
+//   if (args.length === 0 || (args[0] !== "verbose" && args[0] !== "brief")) {
+//     return "ERROR USAGE: mode + <brief / verbose>";
+//   }
+//   return `Output mode set: ${args[0]}`;
+// });
 
 interface REPLInputProps {
   onNewCommand: (newCommand: string) => void;
@@ -22,7 +28,7 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
-  const [outputMode, setOutputMode] = useState<"brief" | "verbose">("brief");
+  const [outputMode, setOutputMode] = useState<"brief" | "verbose">("verbose");
   // TODO WITH TA : add a count state
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
