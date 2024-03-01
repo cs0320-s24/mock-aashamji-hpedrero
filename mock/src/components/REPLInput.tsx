@@ -5,6 +5,9 @@ import { mockedCsvData, searchMockedData } from "./mockedJson";
 import { executeCommand } from "./REPLFunction";
 import { addCommand } from "./REPLFunction";
 
+/**
+ * Registers REPL commands for managing CSV data and changing output modes.
+ */
 addCommand("loadcsv", () => "CSV loaded!");
 addCommand("viewcsv", () => JSON.stringify(mockedCsvData));
 addCommand("searchcsv", (args) =>
@@ -19,9 +22,23 @@ addCommand("mode", (args) => `Output mode set to ${args[0]}`);
 //   return `Output mode set: ${args[0]}`;
 // });
 
+/**
+ * Props for the REPLInput component.
+ *
+ * @interface REPLInputProps
+ * @property {Function} onNewCommand - Callback function to handle the submission of new commands.
+ */
 interface REPLInputProps {
   onNewCommand: (newCommand: string) => void;
 }
+/**
+ * A component for inputting commands into the REPL.
+ * It includes a text input for entering commands and a submit button to execute them.
+ * The component also shows the number of commands submitted.
+ *
+ * @param {REPLInputProps} props - The props for the REPLInput component.
+ * @returns {JSX.Element} The REPL input field, submit button, and the count of submitted commands.
+ */
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
 export function REPLInput({ onNewCommand }: REPLInputProps) {
