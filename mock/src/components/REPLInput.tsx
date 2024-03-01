@@ -2,6 +2,15 @@ import "../styles/main.css";
 import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { mockedCsvData, searchMockedData } from "./mockedJson";
+import { executeCommand } from "./REPLFunction";
+import { addCommand } from "./REPLFunction";
+
+addCommand("loadcsv", () => "CSV loaded!");
+addCommand("viewcsv", () => JSON.stringify(mockedCsvData));
+addCommand("searchcsv", (args) =>
+  JSON.stringify(searchMockedData(args.join(" "), mockedCsvData))
+);
+addCommand("mode", (args) => `Output mode set to ${args[0]}`);
 
 interface REPLInputProps {
   onNewCommand: (newCommand: string) => void;
@@ -18,27 +27,17 @@ export function REPLInput({ onNewCommand }: REPLInputProps) {
 
   // TODO WITH TA: build a handleSubmit function called in button onClick
   const handleSubmit = async () => {
-    const [action, param] = commandString.split(" ");
-    let result = "Command not recognized";
-    let output = "";
+    const [command, ...args] = commandString.split(" ");
+    let result = executeCommand(command, args);
 
-    if (action === "mode" && (param === "brief" || param === "verbose")) {
-      setOutputMode(param);
-      result = `Output mode set to ${param}`;
-    } else if (action === "loadcsv") {
-      result = "CSV loaded!";
-    } else if (action === "viewcsv") {
-      result = JSON.stringify(mockedCsvData);
-    } else if (action === "searchcsv") {
-      const searchResults = searchMockedData(param, mockedCsvData);
-      result = JSON.stringify(searchResults);
+    if (Array.isArray(result)) {
+      result = JSON.stringify(result);
     }
 
-    if (outputMode === "verbose") {
-      output = `Command: ${commandString}\nOutput: ${result}`;
-    } else {
-      output = result;
-    }
+    let output =
+      outputMode === "verbose"
+        ? `Command: ${commandString}\nOutput: ${result}`
+        : result;
 
     onNewCommand(output);
     setCommandString("");
