@@ -69,7 +69,8 @@ test('testing complete mocked test', async ({ page }) => {
   await page.getByLabel('Login').click();
   await expect(page.getByPlaceholder('Enter command here!')).toBeEmpty();
   await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.locator('#root')).toContainText('CSV loaded!');
   await page.getByPlaceholder('Enter command here!').click();
@@ -90,12 +91,13 @@ test('testing command not recognised (fuzz1)', async ({ page }) => {
 });
 
 test('testing mode command not brief or verbose (fuzz2)', async ({ page }) => {
-  await page.goto('http://localhost:8001/');
+  await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
+  await expect(page.locator('#root')).toContainText('Command: loadcsv data/file Output: CSV loaded!');
   await page.getByPlaceholder('Enter command here!').click();
   await page.getByPlaceholder('Enter command here!').fill('mode xyzabc');
   await page.getByRole('button', { name: 'Submit' }).click();
@@ -103,7 +105,7 @@ test('testing mode command not brief or verbose (fuzz2)', async ({ page }) => {
 });
 
 test('testing no input', async ({page}) => {
-  await page.goto('http://localhost:8001/');
+  await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
   await page.getByPlaceholder('Enter command here!').fill('');
@@ -112,31 +114,46 @@ test('testing no input', async ({page}) => {
 });
 
 test('testing search csv (successful)', async ({page}) => {
-  await page.goto('http://localhost:8001/');
+  await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
   await page.getByPlaceholder('Enter command here!').click();
   await page.getByPlaceholder('Enter command here!').fill('searchcsv John Doe');
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.locator('#root')).toContainText('Command: searchcsv John Doe Output: [["1","John Doe","Software Engineer","30"]]');
-})
+});
 
 test('testing search csv (unsuccessful)', async ({page}) => {
-  await page.goto('http://localhost:8001/');
+  await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv');
+  //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file'); //
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
+  await expect(page.locator('#root')).toContainText('Command: loadcsv data/file Output: CSV loaded!');
   await page.getByPlaceholder('Enter command here!').click();
   await page.getByPlaceholder('Enter command here!').fill('searchcsv Hugh');
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.locator('#root')).toContainText('Command: searchcsv Hugh Output: []');
+});
 
-})
+test('testing search csv, empty', async ({page}) => {
+  await page.goto('http://localhost:8000/');
+  await page.getByLabel('Login').click();
+  await page.getByPlaceholder('Enter command here!').click();
+  //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('Command: loadcsv data/file Output: CSV loaded!');
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('searchcsv');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(page.locator('#root')).toContainText('[["ID","Name","Occupation","Age"],["1","John Doe","Software Engineer","30"],["2","Jane Smith","Data Scientist","28"],["3","Alice Johnson","Product Manager","35"],["4","Bob Brown","Graphic Designer","26"],["5","Charlie Davis","Marketing Specialist","32"]]');
+});
 
 
 
