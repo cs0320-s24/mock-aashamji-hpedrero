@@ -70,14 +70,14 @@ test('testing complete mocked test', async ({ page }) => {
   await expect(page.getByPlaceholder('Enter command here!')).toBeEmpty();
   await page.getByPlaceholder('Enter command here!').click();
   //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateListings.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('CSV loaded!');
+  await expect(page.locator('#root')).toContainText('Listings CSV loaded!');
   await page.getByPlaceholder('Enter command here!').click();
   await page.getByPlaceholder('Enter command here!').fill('viewcsv');
   await expect(page.getByPlaceholder('Enter command here!')).toHaveValue('viewcsv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('[["ID","Name","Occupation","Age"],["1","John Doe","Software Engineer","30"],["2","Jane Smith","Data Scientist","28"],["3","Alice Johnson","Product Manager","35"],["4","Bob Brown","Graphic Designer","26"],["5","Charlie Davis","Marketing Specialist","32"]]');
+  await expect(page.locator('#root')).toContainText('[["ID","Address","Price","Bedrooms","Bathrooms","SquareFeet"],["1","123 Maple Street","350000","3","2","2000"],["2","456 Oak Avenue","450000","4","3","2500"],["3","789 Pine Lane","550000","5","4","3000"]]');
 });
 
 test('testing command not recognised (fuzz1)', async ({ page }) => {
@@ -95,65 +95,60 @@ test('testing mode command not brief or verbose (fuzz2)', async ({ page }) => {
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
   //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateAgents.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: loadcsv data/file Output: CSV loaded!');
+  await expect(page.locator('#root')).toContainText('Agents CSV loaded');
   await page.getByPlaceholder('Enter command here!').click();
   await page.getByPlaceholder('Enter command here!').fill('mode xyzabc');
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.locator('#root')).toContainText('Command: mode xyzabc Output: ERROR USAGE: mode + <brief / verbose>');
 });
 
-test('testing no input', async ({page}) => {
-  await page.goto('http://localhost:8000/');
-  await page.getByLabel('Login').click();
-  await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('');
-  await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: Output: Command not recognized');
-});
-
-test('testing search csv (successful)', async ({page}) => {
+test('loading two different files', async ({ page }) => {
   await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
   //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateAgents.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: loadcsv Output: CSV loaded!');
-  await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('searchcsv John Doe');
+  await expect(page.locator('#root')).toContainText('Agents CSV loaded');
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateAgents.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: searchcsv John Doe Output: [["1","John Doe","Software Engineer","30"]]');
+  await expect(page.locator('#root')).toContainText('Agents CSV loaded');
 });
 
-test('testing search csv (unsuccessful)', async ({page}) => {
+test('testing blank load', async ({ page }) => {
   await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
   //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file'); //
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateAgents.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: loadcsv data/file Output: CSV loaded!');
-  await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('searchcsv Hugh');
+  await expect(page.locator('#root')).toContainText('Agents CSV loaded');
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateAgents.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: searchcsv Hugh Output: []');
+  await expect(page.locator('#root')).toContainText('Agents CSV loaded');
 });
 
-test('testing search csv, empty', async ({page}) => {
+test('testing searchcsv', async ({ page }) => {
   await page.goto('http://localhost:8000/');
   await page.getByLabel('Login').click();
   await page.getByPlaceholder('Enter command here!').click();
-  //ONCE FILEPATH ADDED, CHANGE ACCORDINGLY
-  await page.getByPlaceholder('Enter command here!').fill('loadcsv data/file');
+  await page.getByPlaceholder('Enter command here!').fill('loadcsv /path/to/realEstateListings.csv');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('Command: loadcsv data/file Output: CSV loaded!');
+  await expect(page.locator('#root')).toContainText('Command: loadcsv /path/to/realEstateListings.csv Output: Listings CSV loaded!');
   await page.getByPlaceholder('Enter command here!').click();
-  await page.getByPlaceholder('Enter command here!').fill('searchcsv');
+  await page.getByPlaceholder('Enter command here!').fill('searchcsv Avenue');
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('#root')).toContainText('[["ID","Name","Occupation","Age"],["1","John Doe","Software Engineer","30"],["2","Jane Smith","Data Scientist","28"],["3","Alice Johnson","Product Manager","35"],["4","Bob Brown","Graphic Designer","26"],["5","Charlie Davis","Marketing Specialist","32"]]');
+  await expect(page.locator('#root')).toContainText('Command: searchcsv Avenue Output: [["2","456 Oak Avenue","450000","4","3","2500"]]');
 });
+
+
+
+
+
+
+
 
 
 

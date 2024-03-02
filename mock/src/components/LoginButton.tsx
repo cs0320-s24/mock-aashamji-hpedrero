@@ -12,7 +12,23 @@ interface loginProps {
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
 }
 
+/**
+ * Renders a button that allows the user to log in or out.
+ * The button's behavior changes based on the `isLoggedIn` prop.
+ * When clicked, it toggles the user's login status by invoking `setIsLoggedIn`.
+ *
+ * @param {loginProps} props - The properties passed to the LoginButton component.
+ * @returns {JSX.Element} A button element that either logs the user in or out based on their current state.
+ *
+ * @example
+ * <LoginButton isLoggedIn={false} setIsLoggedIn={toggleLogin} />
+ */
 export function LoginButton(props: loginProps) {
+  /**
+   * Toggles the user's login state.
+   *
+   * @returns {boolean} The new login state after toggling.
+   */
   const authenticate = () => {
     const newValue = !props.isLoggedIn;
     props.setIsLoggedIn(newValue);
